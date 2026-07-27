@@ -22,5 +22,15 @@ urls.value.sort();
 </script>
 
 <template>
-  <Card v-for="url in urls" :key="url" :url="url" />
+  <div id="wrapper">
+    <Card v-for="url in urls" :key="url" :url="url" />
+  </div>
 </template>
+
+<style scoped>
+#wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  place-items: center;
+}
+</style>

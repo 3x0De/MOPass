@@ -93,3 +93,32 @@ const Name = computed(() => {
     <p>{{ Name }}</p>
   </div>
 </template>
+
+<style scoped lang="scss">
+@use "../variables" as v;
+
+.card {
+  width: 75px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+  transition: 0.3s all;
+  cursor: pointer;
+
+  p {
+    text-wrap: nowrap;
+    align-self: flex-start;
+    width: 100%;
+    -webkit-mask-image: linear-gradient(90deg, black 75%, transparent 100%);
+    mask-image: linear-gradient(90deg, black 75%, transparent 100%);
+  }
+
+  &:hover {
+    background-color: v.$whiteSpirit;
+  }
+}
+</style>
