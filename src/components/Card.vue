@@ -1,29 +1,80 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 const props = defineProps<{
   url: string;
 }>();
 
-const favicon = computed(() => {
-  try {
-    const domain = new URL(props.url).hostname;
+const currentFavicon = ref<string>("/logos/none.svg");
 
-    if (domain.endsWith(".onion")) return "/logos/tor.png";
-    if (domain.endsWith(".loki")) return "/logos/lokinet.jpg";
-    if (domain.endsWith(".i2p")) return "/logos/I2P.jpg";
+watch(
+  () => props.url,
+  () => {
+    const rawUrl = props.url?.trim() || "";
 
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-  } catch {
-    return "";
-  }
-});
+    if (!rawUrl) {
+      currentFavicon.value = "/logos/none.svg";
+      return;
+    }
+
+    if (
+      rawUrl.startsWith("USK@") ||
+      rawUrl.startsWith("KSK@") ||
+      rawUrl.startsWith("SSK@") ||
+      rawUrl.startsWith("CHK@")
+    ) {
+      currentFavicon.value = "/logos/freenet.png";
+      return;
+    }
+
+    try {
+      const parsedUrl = new URL(
+        rawUrl.startsWith("http") ? rawUrl : `https://${rawUrl}`,
+      );
+      const domain = parsedUrl.hostname;
+
+      if (domain.endsWith(".onion")) {
+        currentFavicon.value = "/logos/tor.png";
+        return;
+      }
+      if (domain.endsWith(".loki")) {
+        currentFavicon.value = "/logos/lokinet.jpg";
+        return;
+      }
+      if (domain.endsWith(".i2p")) {
+        currentFavicon.value = "/logos/I2P.jpg";
+        return;
+      }
+
+      const targetFavicon = `${parsedUrl.origin}/favicon.ico`;
+
+      const img = new Image();
+      img.src = targetFavicon;
+
+      img.onload = () => (currentFavicon.value = targetFavicon);
+
+      img.onerror = () => (currentFavicon.value = "/logos/none.svg");
+    } catch {
+      currentFavicon.value = "/logos/none.svg";
+    }
+  },
+  { immediate: true },
+);
+
+function onError() {
+  currentFavicon.value = "/logos/none.svg";
+}
 
 const Name = computed(() => {
+  const rawUrl = props.url?.trim() || "";
+
   try {
-    const hostname = new URL(props.url).hostname.replace(/^www\./, "");
+    const parsedUrl = new URL(
+      rawUrl.startsWith("http") ? rawUrl : `https://${rawUrl}`,
+    );
+    const hostname = parsedUrl.hostname.replace(/^www\./, "");
     const name = hostname.split(".")[0];
-    return name.charAt(0).toUpperCase() + name.slice(1);
+    return name ? name.charAt(0).toUpperCase() + name.slice(1) : props.url;
   } catch {
     return props.url;
   }
@@ -32,7 +83,13 @@ const Name = computed(() => {
 
 <template>
   <div class="card">
-    <img :src="favicon" alt="Favicon" width="64" height="64" />
+    <img
+      :src="currentFavicon"
+      @error="onError"
+      alt="Favicon"
+      width="64"
+      height="64"
+    />
     <p>{{ Name }}</p>
   </div>
 </template>

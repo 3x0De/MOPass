@@ -15,6 +15,7 @@ const urls = ref<string[]>([
   "https://ssssssss",
   "https://lokinet.loki/",
   "http://zzz.i2p",
+  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
 ]);
 
 urls.value.sort();
