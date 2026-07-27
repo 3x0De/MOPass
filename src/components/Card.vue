@@ -8,6 +8,11 @@ const props = defineProps<{
 const favicon = computed(() => {
   try {
     const domain = new URL(props.url).hostname;
+
+    if (domain.endsWith(".onion")) return "/logos/tor.png";
+    if (domain.endsWith(".loki")) return "/logos/lokinet.jpg";
+    if (domain.endsWith(".i2p")) return "/logos/I2P.jpg";
+
     return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
   } catch {
     return "";
@@ -27,7 +32,7 @@ const Name = computed(() => {
 
 <template>
   <div class="card">
-    <img :src="favicon" alt="Favicon" width="32" height="32" />
+    <img :src="favicon" alt="Favicon" width="64" height="64" />
     <p>{{ Name }}</p>
   </div>
 </template>
