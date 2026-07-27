@@ -13,7 +13,7 @@ watch(
     const rawUrl = props.url?.trim() || "";
 
     if (!rawUrl) {
-      currentFavicon.value = "/logos/none.svg";
+      currentFavicon.value = "/icons/none.svg";
       return;
     }
 
@@ -23,7 +23,7 @@ watch(
       rawUrl.startsWith("SSK@") ||
       rawUrl.startsWith("CHK@")
     ) {
-      currentFavicon.value = "/logos/freenet.png";
+      currentFavicon.value = "/icons/freenet.png";
       return;
     }
 
@@ -34,15 +34,15 @@ watch(
       const domain = parsedUrl.hostname;
 
       if (domain.endsWith(".onion")) {
-        currentFavicon.value = "/logos/tor.png";
+        currentFavicon.value = "/icons/tor.png";
         return;
       }
       if (domain.endsWith(".loki")) {
-        currentFavicon.value = "/logos/lokinet.jpg";
+        currentFavicon.value = "/icons/lokinet.jpg";
         return;
       }
       if (domain.endsWith(".i2p")) {
-        currentFavicon.value = "/logos/I2P.jpg";
+        currentFavicon.value = "/icons/I2P.jpg";
         return;
       }
 
@@ -53,16 +53,16 @@ watch(
 
       img.onload = () => (currentFavicon.value = targetFavicon);
 
-      img.onerror = () => (currentFavicon.value = "/logos/none.svg");
+      img.onerror = () => (currentFavicon.value = "/icons/none.svg");
     } catch {
-      currentFavicon.value = "/logos/none.svg";
+      currentFavicon.value = "/icons/none.svg";
     }
   },
   { immediate: true },
 );
 
 function onError() {
-  currentFavicon.value = "/logos/none.svg";
+  currentFavicon.value = "/icons/none.svg";
 }
 
 const Name = computed(() => {

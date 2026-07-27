@@ -1,7 +1,10 @@
+@use "variables" as *;
+
 body {
-  background-color: red;
+  background-color: $redApple;
 }
 
 * {
   font-family: sans-serif;
+  color: $darkBlack;
 }
