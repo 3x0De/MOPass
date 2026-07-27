@@ -95,7 +95,7 @@ const Name = computed(() => {
 </template>
 
 <style scoped lang="scss">
-@use "../variables" as v;
+@use "../../variables" as v;
 
 .card {
   width: 75px;
