@@ -44,7 +44,7 @@ urls.value.sort();
 
 <template>
   <div id="wrapper">
-    <Card v-for="url in urls" :key="url" :url="url" />
+    <Card v-for="(url, i) in urls" :key="i" :url="url" />
   </div>
 </template>
 
