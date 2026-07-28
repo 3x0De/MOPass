@@ -1,59 +1,71 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Card from "./Card.vue";
 
-const urls = ref<string[]>([
-  "https://google.com",
-  "https://twitch.tv",
-  "https://github.com",
-  "https://strudel.cc",
-  "https://gemini.google.com/app",
-  "https://w3schools.com/vue/vue_v-for.php",
-  "http://juhanurmihxlp77nkq76byazcldy2hlmovfu2epvl5ankdibsot4csyd.onion/",
-  "http://2gzyxa5ihm7nsggfxnu52rck2vv4rvmdlkiu3zzui5du4xyclen53wid.onion/",
-  "https://ahmia.fi/",
-  "https://ssssssss",
-  "https://lokinet.loki/",
-  "http://zzz.i2p",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-  "USK@g29a73m3sCq2A-M~U5tP-RjX~6eE4gX11Y2E~01G5A0,9X1Y8Z7W6V5U4T3S2R1Q,AQACAAE/social-guide/1/",
-]);
+interface CompteCSV {
+  domain: string;
+  name: string;
+  password: string;
+}
 
-urls.value.sort();
+const comptes = ref<CompteCSV[]>([]);
+const isLoading = ref<boolean>(true);
+const errorMsg = ref<string | null>(null);
+
+const loadCSV = async () => {
+  try {
+    const response = await fetch("/comptes.csv");
+
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP: ${response.status}`);
+    }
+
+    const text = await response.text();
+
+    const lines = text.trim().split("\n");
+    if (lines.length === 0) return;
+
+    const headers = lines[0].split(",").map((h) => h.trim());
+
+    comptes.value = lines.slice(1).map((line) => {
+      const values = line.split(",").map((v) => v.trim());
+      const item: Record<string, string> = {};
+
+      headers.forEach((header, index) => {
+        item[header] = values[index] || "";
+      });
+
+      return item as unknown as CompteCSV;
+    });
+  } catch (err) {
+    console.error(err);
+    errorMsg.value = "Impossible de charger le fichier CSV.";
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadCSV();
+});
 </script>
 
 <template>
   <div id="wrapper">
-    <a v-for="(url, i) in urls" :key="i" :href="'/' + String(i)">
-      <Card :url="url" />
+    <a v-for="(compte, i) in comptes" :key="i" :href="'/' + String(i)">
+      <Card :url="compte.domain" />
     </a>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 #wrapper {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   place-items: center;
+
+  a {
+    text-decoration: none;
+  }
 }
 </style>

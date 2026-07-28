@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
 interface Compte {
-  domaine: string;
-  nom?: string;
+  domain: string;
+  name?: string;
 }
 
 interface Props {
@@ -15,9 +15,9 @@ const props = defineProps<Props>();
 const currentFavicon = ref<string>("/logos/none.svg");
 
 watch(
-  () => props.compte.domaine,
+  () => props.compte.domain,
   () => {
-    const rawUrl = props.compte.domaine?.trim() || "";
+    const rawUrl = props.compte.domain?.trim() || "";
 
     if (!rawUrl) {
       currentFavicon.value = "/icons/none.svg";
@@ -73,7 +73,7 @@ function onError() {
 }
 
 const Name = computed(() => {
-  const rawUrl = props.compte.domaine?.trim() || "";
+  const rawUrl = props.compte.domain?.trim() || "";
 
   try {
     const parsedUrl = new URL(
@@ -83,9 +83,9 @@ const Name = computed(() => {
     const name = hostname.split(".")[0];
     return name
       ? name.charAt(0).toUpperCase() + name.slice(1)
-      : props.compte.domaine;
+      : props.compte.domain;
   } catch {
-    return props.compte.domaine;
+    return props.compte.domain;
   }
 });
 </script>
@@ -101,7 +101,7 @@ const Name = computed(() => {
         height="16"
       />
       <h2>{{ Name }}</h2>
-      <p>{{ compte.nom ?? "‎ " }}</p>
+      <p>{{ compte.name ?? "‎ " }}</p>
     </a>
   </li>
 </template>
