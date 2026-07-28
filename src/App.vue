@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
+import { RiAddFill } from "@remixicon/vue";
 </script>
 
 <template>
@@ -7,7 +8,7 @@ import { RouterLink, RouterView } from "vue-router";
     <nav>
       <RouterLink to="/"><img src="/logos/max.svg" alt="MOPass" /></RouterLink>
       <div id="Add">
-        <img src="./assets/Add.svg" alt="" height="32" width="32" />
+        <RiAddFill />
       </div>
     </nav>
   </header>
