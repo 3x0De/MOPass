@@ -21,3 +21,14 @@ const visible = ref<boolean>(false);
     <RiEyeFill v-else @click="visible = !visible" />
   </template>
 </template>
+
+<style scoped lang="scss">
+@use "../../variables.scss" as v;
+
+input {
+  background-color: v.$whiteSpirit;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+}
+</style>
