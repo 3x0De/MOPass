@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "./Card.vue";
+import { RouterLink } from "vue-router";
 
 const urls = ref<string[]>([
   "https://google.com",
@@ -44,7 +45,9 @@ urls.value.sort();
 
 <template>
   <div id="wrapper">
-    <Card v-for="(url, i) in urls" :key="i" :url="url" />
+    <a v-for="(url, i) in urls" :key="i" :href="'/' + String(i)">
+      <Card :url="url" />
+    </a>
   </div>
 </template>
 
