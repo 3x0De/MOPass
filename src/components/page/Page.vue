@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { RiDeleteBinFill } from "@remixicon/vue";
 import CopiableInput from "./CopiableInput.vue";
 import Liste from "./Liste.vue";
+import { RiDeleteBinFill } from "@remixicon/vue";
 
 interface Props {
   id: number;
@@ -11,6 +11,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
+  (e: "delete", deletedId: number): void;
   (e: "update:comptes", comptes: CompteCSV[]): void;
 }>();
 
@@ -90,6 +91,17 @@ const updateCompteField = async (field: keyof CompteCSV, value: string) => {
   comptes.value[props.id][field] = value;
   await saveAndOverwriteCSV();
 };
+
+const deleteCompte = async () => {
+  if (props.id < 0 || props.id >= comptes.value.length) return;
+
+  if (!confirm("Voulez-vous vraiment supprimer ?")) return;
+
+  comptes.value.splice(props.id, 1);
+  emit("delete", props.id);
+
+  await saveAndOverwriteCSV();
+};
 </script>
 
 <template>
@@ -105,7 +117,7 @@ const updateCompteField = async (field: keyof CompteCSV, value: string) => {
     </div>
 
     <div v-else-if="compte" id="main">
-      <RiDeleteBinFill class="Delete" />
+      <RiDeleteBinFill class="Delete" @click="deleteCompte" />
       <div>
         <h1>Nom de domaine</h1>
         <CopiableInput
@@ -165,6 +177,7 @@ const updateCompteField = async (field: keyof CompteCSV, value: string) => {
       position: absolute;
       right: 20px;
       top: 0;
+      cursor: pointer;
     }
   }
 }
