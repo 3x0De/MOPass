@@ -50,6 +50,7 @@ nav {
   flex-shrink: 0;
 
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
 }
 </style>

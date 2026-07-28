@@ -101,7 +101,39 @@ const Name = computed(() => {
         height="16"
       />
       <h2>{{ Name }}</h2>
-      <p>{{ compte.nom }}</p>
+      <p>{{ compte.nom ?? "‎ " }}</p>
     </a>
   </li>
 </template>
+
+<style scoped lang="scss">
+li {
+  list-style-type: none;
+  margin: 10px;
+
+  a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0;
+    text-decoration: none;
+
+    img {
+      position: absolute;
+      transform: translate(-150%, 50%);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      margin: 0;
+      width: max-content;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+    }
+  }
+}
+</style>
