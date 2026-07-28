@@ -46,4 +46,12 @@ header {
     }
   }
 }
+
+main {
+  flex: 1;
+  display: flex;
+  > * {
+    width: 100%;
+  }
+}
 </style>

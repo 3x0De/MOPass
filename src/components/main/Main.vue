@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "./Card.vue";
-import { RouterLink } from "vue-router";
 
 const urls = ref<string[]>([
   "https://google.com",

@@ -6,6 +6,7 @@ import Input from "./Input.vue";
 interface Props {
   type: "text" | "password";
   default?: string;
+  noncopiable?: boolean;
 }
 
 const props = defineProps<Props>();
@@ -32,7 +33,7 @@ const copyToClipboard = async () => {
     <template v-if="!modifing">
       <p v-if="type == 'text'">{{ value || "..." }}</p>
       <p v-else>●●●●●●●●</p>
-      <button @click="copyToClipboard">
+      <button @click="copyToClipboard" v-if="!noncopiable">
         {{ copied ? "Copié !" : "Copier" }}
       </button>
       <RiDeleteBinFill @click="value = ''" />
@@ -54,7 +55,6 @@ div {
   align-items: center;
   justify-content: center;
   height: 2rem;
-  width: 40%;
   gap: 5px;
 
   > *:first-child {
