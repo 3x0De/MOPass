@@ -32,7 +32,7 @@ const copyToClipboard = async () => {
   <div>
     <template v-if="!modifing">
       <p v-if="type == 'text'">{{ value || "..." }}</p>
-      <p v-else>●●●●●●●●</p>
+      <p v-else>{{ value == "" ? "..." : "●●●●●●●●" }}</p>
       <button @click="copyToClipboard" v-if="!noncopiable">
         {{ copied ? "Copié !" : "Copier" }}
       </button>
