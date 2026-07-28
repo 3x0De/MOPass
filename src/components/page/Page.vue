@@ -9,5 +9,6 @@ const props = defineProps<Props>();
 
 <template>
   <h1>{{ id }}</h1>
-  <CopiableInput />
+  <CopiableInput type="text" default="lll" />
+  <CopiableInput type="password" default="Mot de passe" />
 </template>

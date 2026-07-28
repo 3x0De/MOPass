@@ -3,20 +3,43 @@ import { ref } from "vue";
 import { RiPencilFill, RiDeleteBinFill } from "@remixicon/vue";
 import Input from "./Input.vue";
 
+interface Props {
+  type: "text" | "password";
+  default?: string;
+}
+
+const props = defineProps<Props>();
+
 const modifing = ref<boolean>(false);
-console.log(modifing);
+const copied = ref<boolean>(false);
+const value = ref<string>(props.default ?? "");
+
+const copyToClipboard = async () => {
+  try {
+    await navigator.clipboard.writeText(value.value);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 2000);
+  } catch (err) {
+    console.error("Erreur de copie :", err);
+  }
+};
 </script>
 
 <template>
   <div>
     <template v-if="!modifing">
-      <p>champ</p>
-      <button>copier</button>
-      <RiDeleteBinFill />
+      <p v-if="type == 'text'">{{ value || "..." }}</p>
+      <p v-else>●●●●●●●●</p>
+      <button @click="copyToClipboard">
+        {{ copied ? "Copié !" : "Copier" }}
+      </button>
+      <RiDeleteBinFill @click="value = ''" />
     </template>
 
     <template v-else>
-      <Input type="password" />
+      <Input v-model="value" :type="type" />
     </template>
 
     <RiPencilFill @click="modifing = !modifing" />

@@ -6,15 +6,17 @@ interface Props {
   type?: "text" | "password";
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  type: "text",
-});
+const props = defineProps<Props>();
+const model = defineModel<string>();
 
 const visible = ref<boolean>(false);
 </script>
 
 <template>
-  <input :type="type === 'password' && visible ? 'text' : type" />
+  <input
+    :type="type === 'password' && visible ? 'text' : type"
+    v-model="model"
+  />
 
   <template v-if="type === 'password'" @click="visible = !visible">
     <RiEyeOffFill v-if="visible" @click="visible = !visible" />
