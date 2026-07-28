@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import { RiDeleteBinFill } from "@remixicon/vue";
 import CopiableInput from "./CopiableInput.vue";
 import Liste from "./Liste.vue";
 
@@ -8,6 +9,10 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "update:comptes", comptes: CompteCSV[]): void;
+}>();
 
 interface CompteCSV {
   domain: string;
@@ -56,6 +61,35 @@ onMounted(() => {
 });
 
 const compte = computed(() => comptes.value[props.id]);
+
+const saveAndOverwriteCSV = async () => {
+  try {
+    const headers = ["domain", "name", "password"];
+    const rows = comptes.value.map(
+      (c) => `${c.domain},${c.name},${c.password}`,
+    );
+    const csvContent = [headers.join(","), ...rows].join("\n");
+
+    await fetch("http://localhost:3001/api/save-csv", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: csvContent }),
+    });
+
+    emit("update:comptes", comptes.value);
+  } catch (err) {
+    console.error("Erreur lors de l'écriture du fichier :", err);
+  }
+};
+
+const updateCompteField = async (field: keyof CompteCSV, value: string) => {
+  if (!compte.value) return;
+
+  comptes.value[props.id][field] = value;
+  await saveAndOverwriteCSV();
+};
 </script>
 
 <template>
@@ -71,26 +105,32 @@ const compte = computed(() => comptes.value[props.id]);
     </div>
 
     <div v-else-if="compte" id="main">
+      <RiDeleteBinFill class="Delete" />
       <div>
         <h1>Nom de domaine</h1>
         <CopiableInput
           type="text"
-          :default="compte.domain || 'Nom de domaine'"
+          :default="compte.domain"
           :noncopiable="true"
+          @update:modelValue="(val: string) => updateCompteField('domain', val)"
         />
       </div>
       <div>
         <h1>Nom d'utilisateur</h1>
         <CopiableInput
           type="text"
-          :default="compte.name || 'Nom d\'utilisateur'"
+          :default="compte.name"
+          @update:modelValue="(val: string) => updateCompteField('name', val)"
         />
       </div>
       <div>
         <h1>Mot de passe</h1>
         <CopiableInput
           type="password"
-          :default="compte.password || 'Mot de passe'"
+          :default="compte.password"
+          @update:modelValue="
+            (val: string) => updateCompteField('password', val)
+          "
         />
       </div>
     </div>
@@ -115,9 +155,16 @@ const compte = computed(() => comptes.value[props.id]);
     display: flex;
     align-items: center;
     flex-direction: column;
+    position: relative;
 
     > div {
       width: 80%;
+    }
+
+    .Delete {
+      position: absolute;
+      right: 20px;
+      top: 0;
     }
   }
 }
