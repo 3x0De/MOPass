@@ -79,11 +79,13 @@ app.whenReady().then(() => {
 
 app.on("will-quit", () => {
   if (serverProcess) {
-    serverProcess.kill();
+    try {
+      serverProcess.kill();
+    } catch (err) {
+      console.warn("Impossible de tuer le serveur élevé sans sudo:", err);
+    }
+    serverProcess = null;
   }
-  try {
-    execSync("sudo fuser -k 3001/tcp || true");
-  } catch {}
 });
 
 app.on("window-all-closed", () => {
