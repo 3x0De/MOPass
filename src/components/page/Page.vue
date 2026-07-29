@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import CopiableInput from "./CopiableInput.vue";
 import Liste from "./Liste.vue";
 import { RiDeleteBinFill } from "@remixicon/vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 interface Props {
   id: number;
@@ -61,6 +64,14 @@ onMounted(() => {
   loadCSV();
 });
 
+watch(
+  () => props.id,
+  async () => {
+    isLoading.value = true;
+    await loadCSV();
+  },
+);
+
 const compte = computed(() => comptes.value[props.id]);
 
 const saveAndOverwriteCSV = async () => {
@@ -101,6 +112,7 @@ const deleteCompte = async () => {
   emit("delete", props.id);
 
   await saveAndOverwriteCSV();
+  router.push("/");
 };
 </script>
 

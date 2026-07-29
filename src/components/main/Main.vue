@@ -61,11 +61,16 @@ onMounted(() => {
 <style scoped lang="scss">
 #wrapper {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
   place-items: center;
+  padding: 16px;
 
   a {
     text-decoration: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
