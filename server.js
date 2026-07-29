@@ -10,6 +10,25 @@ app.use(express.json({ limit: "50mb" }));
 
 const csvPath = path.resolve(process.cwd(), "public/comptes.csv");
 
+app.get("/api/health", (req, res) => {
+  const startupToken = process.env.MOPASS_STARTUP_TOKEN;
+  const requestedToken = req.query.token;
+
+  if (!startupToken) {
+    return res.status(403).json({ status: "forbidden" });
+  }
+
+  if (requestedToken && requestedToken !== startupToken) {
+    return res.status(403).json({ status: "forbidden" });
+  }
+
+  if (!requestedToken) {
+    return res.status(403).json({ status: "forbidden" });
+  }
+
+  res.status(200).json({ status: "ok", startupToken });
+});
+
 app.post("/api/save-csv", (req, res) => {
   const { content } = req.body;
 
@@ -32,7 +51,7 @@ app.post("/api/save-csv", (req, res) => {
       return res.status(500).send("Erreur écriture.");
     }
 
-    fs.chmod(csvPath, 0o000, (chmodErr) => {
+    fs.chmod(csvPath, 0o644, (chmodErr) => {
       if (chmodErr) {
         console.error("chmod error:", chmodErr);
       }
