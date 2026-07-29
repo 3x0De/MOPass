@@ -6,7 +6,7 @@ const router = useRouter();
 
 const addPage = async () => {
   try {
-    const resp = await fetch("/comptes.csv");
+    const resp = await fetch("http://localhost:3001/api/comptes.csv");
     if (!resp.ok) throw new Error("Impossible de lire le CSV");
     const text = await resp.text();
     const lines = text.trim().split("\n");

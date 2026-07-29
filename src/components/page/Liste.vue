@@ -14,7 +14,7 @@ const errorMsg = ref<string | null>(null);
 
 const loadCSV = async () => {
   try {
-    const response = await fetch("/comptes.csv");
+    const response = await fetch("http://localhost:3001/api/comptes.csv");
 
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);

@@ -13,4 +13,13 @@ export default defineConfig({
     ]),
     renderer(),
   ],
+  server: {
+    proxy: {
+      '/comptes.csv': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/comptes.csv/, '/api/comptes.csv'),
+      },
+    },
+  },
 });

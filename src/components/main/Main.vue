@@ -14,7 +14,7 @@ const errorMsg = ref<string | null>(null);
 
 const loadCSV = async () => {
   try {
-    const response = await fetch("/comptes.csv");
+    const response = await fetch("http://localhost:3001/api/comptes.csv");
 
     if (!response.ok) {
       throw new Error(`Erreur HTTP: ${response.status}`);
@@ -61,16 +61,11 @@ onMounted(() => {
 <style scoped lang="scss">
 #wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
   place-items: center;
-  padding: 16px;
 
   a {
     text-decoration: none;
-    width: 100%;
-    display: flex;
-    justify-content: center;
   }
 }
 </style>

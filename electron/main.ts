@@ -19,7 +19,6 @@ function startNodeServerSudo(onSuccess: () => void, onError: () => void) {
     nodePath = process.argv[0];
   }
 
-  // On demande sudo, on tue le port 3001 si nécessaire, puis on démarre le serveur Node
   const command = `cd "${path.dirname(serverPath)}" && fuser -k 3001/tcp || true && ELECTRON_RUN_AS_NODE=1 "${nodePath}" "${serverPath}"`;
   const options = { name: "MOPass" };
 
