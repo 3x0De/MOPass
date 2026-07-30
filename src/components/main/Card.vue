@@ -1,11 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 
+import noneIcon from "@/assets/icons/none.svg";
+import freenetIcon from "@/assets/icons/freenet.png";
+import torIcon from "@/assets/icons/tor.png";
+import lokinetIcon from "@/assets/icons/lokinet.jpg";
+import i2pIcon from "@/assets/icons/I2P.jpg";
+
 const props = defineProps<{
   url: string;
 }>();
 
-const currentFavicon = ref<string>("/logos/none.svg");
+const currentFavicon = ref<string>(noneIcon);
 
 watch(
   () => props.url,
@@ -13,7 +19,7 @@ watch(
     const rawUrl = props.url?.trim() || "";
 
     if (!rawUrl) {
-      currentFavicon.value = "/icons/none.svg";
+      currentFavicon.value = noneIcon;
       return;
     }
 
@@ -23,7 +29,7 @@ watch(
       rawUrl.startsWith("SSK@") ||
       rawUrl.startsWith("CHK@")
     ) {
-      currentFavicon.value = "/icons/freenet.png";
+      currentFavicon.value = freenetIcon;
       return;
     }
 
@@ -34,35 +40,28 @@ watch(
       const domain = parsedUrl.hostname;
 
       if (domain.endsWith(".onion")) {
-        currentFavicon.value = "/icons/tor.png";
+        currentFavicon.value = torIcon;
         return;
       }
       if (domain.endsWith(".loki")) {
-        currentFavicon.value = "/icons/lokinet.jpg";
+        currentFavicon.value = lokinetIcon;
         return;
       }
       if (domain.endsWith(".i2p")) {
-        currentFavicon.value = "/icons/I2P.jpg";
+        currentFavicon.value = i2pIcon;
         return;
       }
 
-      const targetFavicon = `${parsedUrl.origin}/favicon.ico`;
-
-      const img = new Image();
-      img.src = targetFavicon;
-
-      img.onload = () => (currentFavicon.value = targetFavicon);
-
-      img.onerror = () => (currentFavicon.value = "/icons/none.svg");
+      currentFavicon.value = `${parsedUrl.origin}/favicon.ico`;
     } catch {
-      currentFavicon.value = "/icons/none.svg";
+      currentFavicon.value = noneIcon;
     }
   },
   { immediate: true },
 );
 
 function onError() {
-  currentFavicon.value = "/icons/none.svg";
+  currentFavicon.value = noneIcon;
 }
 
 const Name = computed(() => {

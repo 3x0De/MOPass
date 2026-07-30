@@ -2,6 +2,12 @@
 import { ref, watch, computed } from "vue";
 import { RouterLink } from "vue-router";
 
+import noneIcon from "@/assets/icons/none.svg";
+import freenetIcon from "@/assets/icons/freenet.png";
+import torIcon from "@/assets/icons/tor.png";
+import lokinetIcon from "@/assets/icons/lokinet.jpg";
+import i2pIcon from "@/assets/icons/I2P.jpg";
+
 interface Compte {
   domain: string;
   name?: string;
@@ -14,7 +20,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const currentFavicon = ref<string>("/icons/none.svg");
+const currentFavicon = ref<string>(noneIcon);
 
 watch(
   () => props.compte.domain,
@@ -22,7 +28,7 @@ watch(
     const rawUrl = props.compte.domain?.trim() || "";
 
     if (!rawUrl) {
-      currentFavicon.value = "/icons/none.svg";
+      currentFavicon.value = noneIcon;
       return;
     }
 
@@ -32,7 +38,7 @@ watch(
       rawUrl.startsWith("SSK@") ||
       rawUrl.startsWith("CHK@")
     ) {
-      currentFavicon.value = "/icons/freenet.png";
+      currentFavicon.value = freenetIcon;
       return;
     }
 
@@ -43,28 +49,28 @@ watch(
       const domain = parsedUrl.hostname;
 
       if (domain.endsWith(".onion")) {
-        currentFavicon.value = "/icons/tor.png";
+        currentFavicon.value = torIcon;
         return;
       }
       if (domain.endsWith(".loki")) {
-        currentFavicon.value = "/icons/lokinet.jpg";
+        currentFavicon.value = lokinetIcon;
         return;
       }
       if (domain.endsWith(".i2p")) {
-        currentFavicon.value = "/icons/I2P.jpg";
+        currentFavicon.value = i2pIcon;
         return;
       }
 
       currentFavicon.value = `${parsedUrl.origin}/favicon.ico`;
     } catch {
-      currentFavicon.value = "/icons/none.svg";
+      currentFavicon.value = noneIcon;
     }
   },
   { immediate: true },
 );
 
 function onError() {
-  currentFavicon.value = "/icons/none.svg";
+  currentFavicon.value = noneIcon;
 }
 
 const Name = computed(() => {
