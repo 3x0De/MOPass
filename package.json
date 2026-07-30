@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "vite",
     "build:server": "esbuild server.js --bundle --platform=node --format=cjs --outfile=dist-server/server.js",
-    "build": "vue-tsc && vite build && npm run build:server",
-    "electron:build": "npm run build && electron-builder",
+    "build": "vue-tsc && vite build && npm run build:server && electron-builder",
+    "electron:build": "npm run build",
     "preview": "vite preview"
   },
   "build": {
@@ -34,7 +34,7 @@
         "deb"
       ],
       "category": "Utility",
-      "icon": "public/logos/mini.png"
+      "icon": "build/icon.png"
     }
   },
   "dependencies": {
@@ -56,7 +56,6 @@
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
     "vite-plugin-electron": "^1.1.0",
-    "vite-plugin-electron-renderer": "^1.0.0",
     "vue-tsc": "^3.3.5"
   }
 }

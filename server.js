@@ -10,7 +10,11 @@ app.use(express.json({ limit: "50mb" }));
 
 const dataDir = process.env.HOME
   ? path.join(process.env.HOME, ".config", "mopass")
-  : path.resolve(process.cwd(), "public");
+  : path.resolve(process.cwd());
+
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
 
 const csvPath = path.join(dataDir, "comptes.csv");
 
