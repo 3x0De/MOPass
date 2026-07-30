@@ -28,7 +28,7 @@ MOPass est un gestionnaire de mots de passe 100 % local, rapide et sécurisé. C
 #### Installation sous Linux (Debian / Ubuntu)
 
 ```bash
-git clone [https://github.com/3x0De/MOPass.git](https://github.com/3x0De/MOPass.git)
+git clone https://github.com/3x0De/MOPass.git
 cd MOPass
 npm install
 npm run electron:build
