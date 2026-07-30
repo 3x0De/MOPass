@@ -1,9 +1,9 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import electron from "vite-plugin-electron";
-import renderer from "vite-plugin-electron-renderer";
 
 export default defineConfig({
+  base: "./",
   plugins: [
     vue(),
     electron([
@@ -11,14 +11,13 @@ export default defineConfig({
         entry: "electron/main.ts",
       },
     ]),
-    renderer(),
   ],
   server: {
     proxy: {
-      '/comptes.csv': {
-        target: 'http://localhost:3001',
+      "/comptes.csv": {
+        target: "http://localhost:3001",
         changeOrigin: true,
-        rewrite: (p) => p.replace(/^\/comptes.csv/, '/api/comptes.csv'),
+        rewrite: (p) => p.replace(/^\/comptes.csv/, "/api/comptes.csv"),
       },
     },
   },

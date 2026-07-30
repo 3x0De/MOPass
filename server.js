@@ -8,21 +8,17 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
-const csvPath = path.resolve(process.cwd(), "public/comptes.csv");
+const dataDir = process.env.HOME
+  ? path.join(process.env.HOME, ".config", "mopass")
+  : path.resolve(process.cwd(), "public");
+
+const csvPath = path.join(dataDir, "comptes.csv");
 
 app.get("/api/health", (req, res) => {
   const startupToken = process.env.MOPASS_STARTUP_TOKEN;
   const requestedToken = req.query.token;
 
-  if (!startupToken) {
-    return res.status(403).json({ status: "forbidden" });
-  }
-
-  if (requestedToken && requestedToken !== startupToken) {
-    return res.status(403).json({ status: "forbidden" });
-  }
-
-  if (!requestedToken) {
+  if (!startupToken || !requestedToken || requestedToken !== startupToken) {
     return res.status(403).json({ status: "forbidden" });
   }
 
@@ -63,6 +59,10 @@ app.post("/api/save-csv", (req, res) => {
 });
 
 app.get("/api/comptes.csv", (req, res) => {
+  if (!fs.existsSync(csvPath)) {
+    return res.type("text/csv").send("");
+  }
+
   fs.readFile(csvPath, "utf8", (err, data) => {
     if (err) {
       console.error("read error:", err);

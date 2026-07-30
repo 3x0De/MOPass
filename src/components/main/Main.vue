@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { RouterLink } from "vue-router";
 import Card from "./Card.vue";
 
 interface CompteCSV {
@@ -52,9 +53,9 @@ onMounted(() => {
 
 <template>
   <div id="wrapper">
-    <a v-for="(compte, i) in comptes" :key="i" :href="'/' + String(i)">
+    <RouterLink v-for="(compte, i) in comptes" :key="i" :to="'/' + i">
       <Card :url="compte.domain" />
-    </a>
+    </RouterLink>
   </div>
 </template>
 

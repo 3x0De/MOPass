@@ -1,61 +1,37 @@
 import { app, BrowserWindow } from "electron";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-import { execSync } from "node:child_process";
-import sudo from "@vscode/sudo-prompt";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { exec } from "node:child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-type ManagedServerProcess = {
-  kill: () => void;
-  once: (event: string, listener: (...args: unknown[]) => void) => void;
-};
+let serverProcess: ReturnType<typeof exec> | null = null;
 
-let serverProcess: ManagedServerProcess | null = null;
+function resolveServerPath(): string {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, "server.js");
+  }
+  return path.resolve(__dirname, "../server.js");
+}
 
 function startNodeServerSudo(onSuccess: () => void, onError: () => void) {
-  const serverPath = path.resolve(__dirname, "../server.js");
+  const serverPath = resolveServerPath();
   const startupToken = `mopass-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const nodeBinary = process.execPath;
 
-  let nodePath = "node";
-  try {
-    nodePath = execSync("which node", { encoding: "utf8" }).trim();
-  } catch {
-    nodePath = process.argv[0];
-  }
+  const command = `pkexec sh -c "fuser -k 3001/tcp || true; env MOPASS_STARTUP_TOKEN=\\"${startupToken}\\" ELECTRON_RUN_AS_NODE=1 \\"${nodeBinary}\\" \\"${serverPath}\\""`;
 
-  const command = `cd "${path.dirname(serverPath)}" && fuser -k 3001/tcp || true && MOPASS_STARTUP_TOKEN="${startupToken}" ELECTRON_RUN_AS_NODE=1 "${nodePath}" "${serverPath}"`;
-  const options = { name: "MOPass" };
+  serverProcess = exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Erreur serveur root:", error, stderr);
+      onError();
+    }
+  });
 
   let isStarted = false;
-  let startupFinished = false;
-
-  const finishStartup = (callback: () => void) => {
-    if (startupFinished) {
-      return;
-    }
-
-    startupFinished = true;
-    callback();
-  };
-
-  const launchedProcess = sudo.exec(command, options, (error) => {
-    if (error && !isStarted) {
-      console.error("Authentification annulée ou refusée.");
-      finishStartup(onError);
-    }
-  }) as unknown as ManagedServerProcess | undefined;
-
-  if (launchedProcess) {
-    serverProcess = launchedProcess;
-  }
 
   const pollInterval = setInterval(async () => {
-    if (isStarted || startupFinished) {
-      return;
-    }
-
     try {
       const res = await fetch(
         `http://127.0.0.1:3001/api/health?token=${encodeURIComponent(startupToken)}`,
@@ -63,29 +39,17 @@ function startNodeServerSudo(onSuccess: () => void, onError: () => void) {
       if (res.ok) {
         isStarted = true;
         clearInterval(pollInterval);
-        clearTimeout(startupTimeout);
-        finishStartup(onSuccess);
+        onSuccess();
       }
     } catch {}
   }, 250);
 
-  const startupTimeout = setTimeout(() => {
-    if (!isStarted && !startupFinished) {
-      clearInterval(pollInterval);
-      console.error("Le serveur n'a pas démarré dans les 30 secondes.");
-      finishStartup(onError);
-    }
-  }, 30000);
-
   if (serverProcess) {
-    serverProcess.once("exit", (code) => {
-      if (!isStarted && code !== 0 && !startupFinished) {
+    serverProcess.on("exit", (code) => {
+      if (!isStarted) {
         clearInterval(pollInterval);
-        clearTimeout(startupTimeout);
-        console.error(
-          `Le serveur a quitté prématurément avec le code ${code}.`,
-        );
-        finishStartup(onError);
+        console.error("Le serveur root s'est arrêté avec le code:", code);
+        onError();
       }
     });
   }
@@ -102,10 +66,11 @@ function createWindow() {
     },
   });
 
-  if (process.env.VITE_DEV_SERVER_URL) {
+  if (!app.isPackaged && process.env.VITE_DEV_SERVER_URL) {
     win.loadURL(process.env.VITE_DEV_SERVER_URL);
   } else {
-    win.loadFile(path.join(__dirname, "../dist/index.html"));
+    const indexPath = path.resolve(__dirname, "../dist/index.html");
+    win.loadURL(pathToFileURL(indexPath).href);
   }
 }
 
@@ -120,9 +85,7 @@ app.on("will-quit", () => {
   if (serverProcess) {
     try {
       serverProcess.kill();
-    } catch (err) {
-      console.warn("Impossible de tuer le serveur élevé sans sudo:", err);
-    }
+    } catch {}
     serverProcess = null;
   }
 });

@@ -48,14 +48,12 @@ const loadCSV = async () => {
 onMounted(() => {
   loadCSV();
 });
-
-comptes.value.sort();
 </script>
 
 <template>
   <nav>
     <ul>
-      <Compte v-for="(value, i) in comptes" :compte="value" :url="i" />
+      <Compte v-for="(value, i) in comptes" :key="i" :compte="value" :url="i" />
     </ul>
   </nav>
 </template>

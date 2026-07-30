@@ -1,13 +1,41 @@
 {
   "name": "mopass",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "author": "3x0De <3x0De@github.com>",
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc && vite build",
+    "build:server": "esbuild server.js --bundle --platform=node --format=cjs --outfile=dist-server/server.js",
+    "build": "vue-tsc && vite build && npm run build:server",
+    "electron:build": "npm run build && electron-builder",
     "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.mopass.app",
+    "productName": "MOPass",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "dist-server/server.js",
+        "to": "server.js"
+      }
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility",
+      "icon": "public/logos/mini.png"
+    }
   },
   "dependencies": {
     "@remixicon/vue": "^4.9.0",
@@ -22,6 +50,8 @@
     "@vitejs/plugin-vue": "^6.0.7",
     "@vue/tsconfig": "^0.9.1",
     "electron": "^43.2.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.1",
     "sass": "^1.102.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",

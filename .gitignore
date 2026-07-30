@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 dist-electron
+dist-server
+release
 
 # Editor directories and files
 .vscode

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from "vue";
+import { RouterLink } from "vue-router";
+
 interface Compte {
   domain: string;
   name?: string;
@@ -12,7 +14,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const currentFavicon = ref<string>("/logos/none.svg");
+const currentFavicon = ref<string>("/icons/none.svg");
 
 watch(
   () => props.compte.domain,
@@ -53,14 +55,7 @@ watch(
         return;
       }
 
-      const targetFavicon = `${parsedUrl.origin}/favicon.ico`;
-
-      const img = new Image();
-      img.src = targetFavicon;
-
-      img.onload = () => (currentFavicon.value = targetFavicon);
-
-      img.onerror = () => (currentFavicon.value = "/icons/none.svg");
+      currentFavicon.value = `${parsedUrl.origin}/favicon.ico`;
     } catch {
       currentFavicon.value = "/icons/none.svg";
     }
@@ -92,7 +87,7 @@ const Name = computed(() => {
 
 <template>
   <li>
-    <a :href="'/' + String(url)">
+    <RouterLink :to="'/' + url">
       <img
         :src="currentFavicon"
         @error="onError"
@@ -102,7 +97,7 @@ const Name = computed(() => {
       />
       <h2>{{ Name }}</h2>
       <p>{{ compte.name ?? "‎ " }}</p>
-    </a>
+    </RouterLink>
   </li>
 </template>
 
